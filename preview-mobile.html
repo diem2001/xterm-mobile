@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xterm-mobile Preview (Mobile)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1e1e2e;
+    font-family: 'Menlo', 'Consolas', monospace;
+    color: #cdd6f4;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+  }
+  .terminal-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 24px;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #a6adc8;
+    white-space: pre;
+    overflow: hidden;
+  }
+  .terminal-bg .prompt { color: #89b4fa; }
+  .terminal-bg .path { color: #a6e3a1; }
+  .terminal-bg .cmd { color: #cdd6f4; }
+  .terminal-bg .output { color: #6c7086; }
+  .terminal-bg .cursor {
+    background: #cdd6f4;
+    color: #1e1e2e;
+  }
+  .tmux-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 24px;
+    background: #313244;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 11px;
+    color: #a6adc8;
+  }
+  .tmux-bar .active-window {
+    background: #45475a;
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: #cdd6f4;
+    margin-right: 6px;
+  }
+  .tmux-bar .inactive-window {
+    padding: 2px 8px;
+    color: #6c7086;
+    margin-right: 6px;
+  }
+  .tmux-bar .right {
+    margin-left: auto;
+    color: #6c7086;
+  }
+</style>
+</head>
+<body>
+
+<div class="terminal-bg"><span class="prompt">dge@code1</span>:<span class="path">~</span>$ <span class="cmd">claude</span>
+<span class="output">
+╭────────────────────────────╮
+│ Claude Code  v2.3.1        │
+│ Model: claude-opus-4-6     │
+│                            │
+│ Working directory:         │
+│ ~/jira-workflow-kit        │
+╰────────────────────────────╯</span>
+
+<span class="prompt">></span> <span class="cursor"> </span></div>
+
+<div class="tmux-bar">
+  <span class="active-window">0:claude</span>
+  <span class="inactive-window">1:build</span>
+  <span class="right">code1 │ 14:32</span>
+</div>
+
+<!-- Overlay with FORCED mobile styles (no media query needed) -->
+<style>
+#tmux-overlay{position:fixed;top:12px;right:12px;left:12px;z-index:9999;user-select:none;
+  display:flex;flex-direction:row-reverse;align-items:flex-start;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+#tmux-toggle{width:56px;height:56px;border:none;border-radius:14px;flex-shrink:0;
+  background:rgba(30,30,30,1);
+  color:#ddd;font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.8)}
+#tmux-toggle.open{background:rgba(40,40,40,1);color:#ddd}
+#tmux-panel{display:none;padding:12px;border-radius:16px;
+  background:rgba(30,30,30,1);
+  box-shadow:0 4px 12px rgba(0,0,0,0.8);
+  width:100%;max-width:366px;
+  animation:tmux-slide-in .15s ease-out}
+@keyframes tmux-slide-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+#tmux-panel.open{display:block}
+#tmux-panel .section-label{color:#666;font-size:14px;font-family:system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:0.5px;margin:0 0 4px 2px}
+#tmux-panel .section-label:not(:first-child){margin-top:8px}
+#tmux-dpad{display:grid;grid-template-columns:44px 44px 44px;grid-template-rows:44px 44px;gap:4px;justify-content:center}
+#tmux-actions,#tmux-windows{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:3px}
+#tmux-panel button{border:none;border-radius:12px;height:52px;
+  background:rgba(50,50,50,1);color:#bbb;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 1px 2px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.06)}
+#tmux-panel button.wide{font-size:15px;font-family:system-ui,sans-serif;font-weight:500;padding:0 16px}
+#tmux-esc,#tmux-paste{border:none;border-radius:14px;width:64px;height:56px;
+  background:rgba(137,180,250,1);color:#1e1e2e;font-size:16px;font-weight:700;
+  font-family:system-ui,sans-serif;cursor:pointer;letter-spacing:0.5px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.8)}
+#tmux-paste{font-size:24px}
+#tmux-scroll-btn{display:none}
+#tmux-keys{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:3px}
+.tmux-spacer{visibility:hidden}
+</style>
+
+<div id="tmux-overlay">
+  <button id="tmux-toggle" class="open" title="tmux controls">&#9776;</button>
+  <button id="tmux-paste" title="Paste from clipboard">&#128203;</button>
+  <button id="tmux-esc" title="Send Escape">ESC</button>
+  <div id="tmux-panel" class="open">
+    <div class="section-label">Keys</div>
+    <div id="tmux-keys">
+      <button class="wide" data-key="esc">ESC</button>
+      <button class="wide" data-key="tab">Tab &#8677;</button>
+      <button class="wide" data-key="ctrl-c">Ctrl-C</button>
+      <button class="wide" data-key="ctrl-d">Ctrl-D</button>
+    </div>
+    <div class="section-label">Navigate</div>
+    <div id="tmux-dpad">
+      <div class="tmux-spacer"></div>
+      <button data-dir="Up">&#9650;</button>
+      <div class="tmux-spacer"></div>
+      <button data-dir="Left">&#9664;</button>
+      <button data-dir="Down">&#9660;</button>
+      <button data-dir="Right">&#9654;</button>
+    </div>
+    <div class="section-label">Panes</div>
+    <div id="tmux-actions">
+      <button class="wide" data-action="zoom">&#x26F6; Zoom</button>
+      <button class="wide" data-action="scroll">&#8593; Scroll</button>
+      <button class="wide" data-action="split-h">&#9473; Split H</button>
+      <button class="wide" data-action="split-v">&#9475; Split V</button>
+      <button class="wide" data-action="rename-pane">&#9998; Rename</button>
+      <button class="wide" data-action="kill">&#10005; Close</button>
+    </div>
+    <div class="section-label">Windows</div>
+    <div id="tmux-windows">
+      <button class="wide" data-action="new-window">&#43; New</button>
+      <button class="wide" data-action="rename-window">&#9998; Rename</button>
+      <button class="wide" data-action="kill-window">&#10005; Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

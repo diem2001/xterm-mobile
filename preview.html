@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xterm-mobile Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1e1e2e;
+    font-family: 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+    color: #cdd6f4;
+    overflow: hidden;
+  }
+  /* Fake terminal content */
+  .terminal-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #a6adc8;
+    white-space: pre;
+    overflow: hidden;
+  }
+  .terminal-bg .prompt { color: #89b4fa; }
+  .terminal-bg .path { color: #a6e3a1; }
+  .terminal-bg .cmd { color: #cdd6f4; }
+  .terminal-bg .output { color: #6c7086; }
+  .terminal-bg .cursor {
+    background: #cdd6f4;
+    color: #1e1e2e;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* tmux status bar */
+  .tmux-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 24px;
+    background: #313244;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 12px;
+    color: #a6adc8;
+  }
+  .tmux-bar .active-window {
+    background: #45475a;
+    padding: 2px 10px;
+    border-radius: 3px;
+    color: #cdd6f4;
+    margin-right: 6px;
+  }
+  .tmux-bar .inactive-window {
+    padding: 2px 10px;
+    color: #6c7086;
+    margin-right: 6px;
+  }
+  .tmux-bar .right {
+    margin-left: auto;
+    color: #6c7086;
+  }
+</style>
+</head>
+<body>
+
+<!-- Simulated terminal content -->
+<div class="terminal-bg"><span class="prompt">dge@code1</span>:<span class="path">~/jira-workflow-kit</span>$ <span class="cmd">tmux list-sessions</span>
+<span class="output">claude: 3 windows (created Sat Mar 22 09:14:21 2026)</span>
+
+<span class="prompt">dge@code1</span>:<span class="path">~/jira-workflow-kit</span>$ <span class="cmd">claude</span>
+<span class="output">
+╭──────────────────────────────────────────╮
+│  Claude Code  v2.3.1                     │
+│  Model: claude-opus-4-6                  │
+│  Context: 1,048,576 tokens               │
+│                                          │
+│  Working directory:                      │
+│  ~/jira-workflow-kit                     │
+│                                          │
+│  Type your request...                    │
+╰──────────────────────────────────────────╯</span>
+
+<span class="prompt">></span> <span class="cursor"> </span></div>
+
+<!-- tmux status bar -->
+<div class="tmux-bar">
+  <span class="active-window">0:claude</span>
+  <span class="inactive-window">1:build</span>
+  <span class="inactive-window">2:logs</span>
+  <span class="right">code1 │ 14:32</span>
+</div>
+
+<!-- Load actual overlay CSS and HTML -->
+<style>
+html,body{overflow:hidden!important;position:fixed;width:100%;height:100%;touch-action:manipulation}
+#tmux-overlay{position:fixed;top:25px;right:25px;z-index:9999;user-select:none;-webkit-user-select:none;
+  display:flex;flex-direction:row-reverse;align-items:flex-start;gap:6px}
+#tmux-toggle{width:38px;height:38px;border:none;border-radius:8px;flex-shrink:0;
+  background:rgba(30,30,30,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:#aaa;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08);
+  transition:background .15s,transform .1s}
+#tmux-toggle:active{transform:scale(0.92)}
+#tmux-toggle.open{background:rgba(40,40,40,0.8);color:#ddd}
+#tmux-panel{display:none;padding:8px;border-radius:10px;
+  background:rgba(20,20,20,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 4px 12px rgba(0,0,0,0.5);
+  animation:tmux-slide-in .15s ease-out}
+@keyframes tmux-slide-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+#tmux-panel.open{display:block}
+#tmux-panel .section-label{color:#666;font-size:10px;font-family:system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:0.5px;margin:0 0 4px 2px}
+#tmux-panel .section-label:not(:first-child){margin-top:8px}
+#tmux-dpad{display:grid;grid-template-columns:36px 36px 36px;grid-template-rows:36px 36px;gap:3px;justify-content:center}
+#tmux-actions,#tmux-windows{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:3px}
+#tmux-panel button{border:none;border-radius:6px;height:36px;
+  background:rgba(50,50,50,0.8);color:#bbb;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 1px 2px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.06);
+  transition:background .12s,transform .08s}
+#tmux-panel button:active{transform:scale(0.93);background:rgba(80,80,80,0.8);color:#eee}
+#tmux-panel button.wide{font-size:11px;font-family:system-ui,sans-serif;font-weight:500;padding:0 6px}
+#tmux-esc,#tmux-paste,#tmux-scroll-btn{border:none;border-radius:8px;width:44px;height:36px;
+  background:rgba(137,180,250,0.25);color:#89b4fa;font-size:11px;font-weight:700;
+  font-family:system-ui,sans-serif;cursor:pointer;letter-spacing:0.5px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.4),inset 0 1px 0 rgba(137,180,250,0.15);
+  transition:background .12s,transform .08s}
+#tmux-esc:active,#tmux-paste:active,#tmux-scroll-btn:active{transform:scale(0.93);background:rgba(137,180,250,0.4)}
+#tmux-paste{font-size:16px}
+#tmux-keys{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:3px}
+.tmux-spacer{visibility:hidden}
+#tmux-prompt-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;
+  background:rgba(0,0,0,0.5);align-items:center;justify-content:center}
+#tmux-prompt-overlay.open{display:flex}
+#tmux-prompt-box{background:#1e1e2e;border:1px solid #45475a;border-radius:10px;padding:16px;
+  min-width:260px;font-family:system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,0.6)}
+#tmux-prompt-box label{color:#cdd6f4;font-size:13px;display:block;margin-bottom:8px}
+#tmux-prompt-box input{width:100%;box-sizing:border-box;background:#313244;border:1px solid #585b70;
+  border-radius:6px;padding:8px 10px;color:#cdd6f4;font-size:14px;font-family:'JetBrains Mono NF',monospace;
+  outline:none}
+#tmux-prompt-box input:focus{border-color:#89b4fa}
+#tmux-prompt-box .btn-row{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
+#tmux-prompt-box button{border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;
+  font-family:system-ui,sans-serif;font-weight:500}
+#tmux-prompt-box .btn-cancel{background:#45475a;color:#bac2de}
+#tmux-prompt-box .btn-ok{background:#89b4fa;color:#1e1e2e}
+</style>
+
+<div id="tmux-overlay">
+  <button id="tmux-toggle" title="tmux controls">&#9776;</button>
+  <button id="tmux-scroll-btn" title="Toggle scroll mode">&#8597;</button>
+  <button id="tmux-paste" title="Paste from clipboard">&#128203;</button>
+  <button id="tmux-esc" title="Send Escape">ESC</button>
+  <div id="tmux-panel">
+    <div class="section-label">Keys</div>
+    <div id="tmux-keys">
+      <button class="wide" data-key="esc" title="Escape">ESC</button>
+      <button class="wide" data-key="tab" title="Tab">Tab &#8677;</button>
+      <button class="wide" data-key="ctrl-c" title="Ctrl-C">Ctrl-C</button>
+      <button class="wide" data-key="ctrl-d" title="Ctrl-D">Ctrl-D</button>
+    </div>
+    <div class="section-label">Navigate</div>
+    <div id="tmux-dpad">
+      <div class="tmux-spacer"></div>
+      <button data-dir="Up" title="Pane Up">&#9650;</button>
+      <div class="tmux-spacer"></div>
+      <button data-dir="Left" title="Pane Left">&#9664;</button>
+      <button data-dir="Down" title="Pane Down">&#9660;</button>
+      <button data-dir="Right" title="Pane Right">&#9654;</button>
+    </div>
+    <div class="section-label">Panes</div>
+    <div id="tmux-actions">
+      <button class="wide" data-action="zoom" title="Toggle Zoom">&#x26F6; Zoom</button>
+      <button class="wide" data-action="scroll" title="Scroll Mode">&#8593; Scroll</button>
+      <button class="wide" data-action="split-h" title="Split Horizontal">&#9473; Split H</button>
+      <button class="wide" data-action="split-v" title="Split Vertical">&#9475; Split V</button>
+      <button class="wide" data-action="rename-pane" title="Rename Pane">&#9998; Rename</button>
+      <button class="wide" data-action="kill" title="Kill Pane">&#10005; Close</button>
+    </div>
+    <div class="section-label">Windows</div>
+    <div id="tmux-windows">
+      <button class="wide" data-action="new-window" title="New Window">&#43; New</button>
+      <button class="wide" data-action="rename-window" title="Rename Window">&#9998; Rename</button>
+      <button class="wide" data-action="kill-window" title="Kill Window">&#10005; Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Auto-open the panel for the screenshot
+document.getElementById('tmux-panel').classList.add('open');
+document.getElementById('tmux-toggle').classList.add('open');
+</script>
+
+</body>
+</html>

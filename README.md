@@ -2,6 +2,10 @@
 
 Mobile-friendly tmux overlay for [ttyd](https://github.com/tsl0922/ttyd) — turns a browser terminal into a touch-friendly control panel with pane navigation, scroll support, and iOS optimizations.
 
+| Desktop | Mobile (iPhone) |
+|---------|-----------------|
+| ![Desktop overlay](screenshots/desktop.png) | ![Mobile overlay](screenshots/mobile.png) |
+
 ## What it does
 
 Patches ttyd's compiled `index.html` with:
