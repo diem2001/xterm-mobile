@@ -1,0 +1,49 @@
+<div id="tmux-overlay">
+  <button id="tmux-toggle" title="tmux controls">&#9776;</button>
+  <button id="tmux-scroll-btn" title="Toggle scroll mode">&#8597;</button>
+  <button id="tmux-paste" title="Paste from clipboard">&#128203;</button>
+  <button id="tmux-esc" title="Send Escape">ESC</button>
+  <div id="tmux-panel">
+    <div class="section-label">Keys</div>
+    <div id="tmux-keys">
+      <button class="wide" data-key="esc" title="Escape">ESC</button>
+      <button class="wide" data-key="tab" title="Tab">Tab &#8677;</button>
+      <button class="wide" data-key="ctrl-c" title="Ctrl-C">Ctrl-C</button>
+      <button class="wide" data-key="ctrl-d" title="Ctrl-D">Ctrl-D</button>
+    </div>
+    <div class="section-label">Navigate</div>
+    <div id="tmux-dpad">
+      <div class="tmux-spacer"></div>
+      <button data-dir="Up" title="Pane Up">&#9650;</button>
+      <div class="tmux-spacer"></div>
+      <button data-dir="Left" title="Pane Left">&#9664;</button>
+      <button data-dir="Down" title="Pane Down">&#9660;</button>
+      <button data-dir="Right" title="Pane Right">&#9654;</button>
+    </div>
+    <div class="section-label">Panes</div>
+    <div id="tmux-actions">
+      <button class="wide" data-action="zoom" title="Toggle Zoom">&#x26F6; Zoom</button>
+      <button class="wide" data-action="scroll" title="Scroll Mode">&#8593; Scroll</button>
+      <button class="wide" data-action="split-h" title="Split Horizontal">&#9473; Split H</button>
+      <button class="wide" data-action="split-v" title="Split Vertical">&#9475; Split V</button>
+      <button class="wide" data-action="rename-pane" title="Rename Pane">&#9998; Rename</button>
+      <button class="wide" data-action="kill" title="Kill Pane">&#10005; Close</button>
+    </div>
+    <div class="section-label">Windows</div>
+    <div id="tmux-windows">
+      <button class="wide" data-action="new-window" title="New Window">&#43; New</button>
+      <button class="wide" data-action="rename-window" title="Rename Window">&#9998; Rename</button>
+      <button class="wide" data-action="kill-window" title="Kill Window">&#10005; Close</button>
+    </div>
+  </div>
+</div>
+<div id="tmux-prompt-overlay">
+  <div id="tmux-prompt-box">
+    <label id="tmux-prompt-label">Name:</label>
+    <input id="tmux-prompt-input" type="text" autocomplete="off" spellcheck="false">
+    <div class="btn-row">
+      <button class="btn-cancel" id="tmux-prompt-cancel">Cancel</button>
+      <button class="btn-ok" id="tmux-prompt-ok">OK</button>
+    </div>
+  </div>
+</div>

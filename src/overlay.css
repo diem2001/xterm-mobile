@@ -1,0 +1,71 @@
+html,body{overflow:hidden!important;position:fixed;width:100%;height:100%;touch-action:manipulation}
+#tmux-overlay{position:fixed;top:25px;right:25px;z-index:9999;user-select:none;-webkit-user-select:none;
+  display:flex;flex-direction:row-reverse;align-items:flex-start;gap:6px}
+#tmux-toggle{width:38px;height:38px;border:none;border-radius:8px;flex-shrink:0;
+  background:rgba(30,30,30,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:#aaa;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08);
+  transition:background .15s,transform .1s}
+#tmux-toggle:active{transform:scale(0.92)}
+#tmux-toggle.open{background:rgba(40,40,40,0.8);color:#ddd}
+#tmux-panel{display:none;padding:8px;border-radius:10px;
+  background:rgba(20,20,20,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 4px 12px rgba(0,0,0,0.5);
+  animation:tmux-slide-in .15s ease-out}
+@keyframes tmux-slide-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+#tmux-panel.open{display:block}
+#tmux-panel .section-label{color:#666;font-size:10px;font-family:system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:0.5px;margin:0 0 4px 2px}
+#tmux-panel .section-label:not(:first-child){margin-top:8px}
+#tmux-dpad{display:grid;grid-template-columns:36px 36px 36px;grid-template-rows:36px 36px;gap:3px;justify-content:center}
+#tmux-actions,#tmux-windows{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:3px}
+#tmux-panel button{border:none;border-radius:6px;height:36px;
+  background:rgba(50,50,50,0.8);color:#bbb;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 1px 2px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.06);
+  transition:background .12s,transform .08s}
+#tmux-panel button:active{transform:scale(0.93);background:rgba(80,80,80,0.8);color:#eee}
+#tmux-panel button.wide{font-size:11px;font-family:system-ui,sans-serif;font-weight:500;padding:0 6px}
+#tmux-esc,#tmux-paste,#tmux-scroll-btn{border:none;border-radius:8px;width:44px;height:36px;
+  background:rgba(137,180,250,0.25);color:#89b4fa;font-size:11px;font-weight:700;
+  font-family:system-ui,sans-serif;cursor:pointer;letter-spacing:0.5px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.4),inset 0 1px 0 rgba(137,180,250,0.15);
+  transition:background .12s,transform .08s}
+#tmux-esc:active,#tmux-paste:active,#tmux-scroll-btn:active{transform:scale(0.93);background:rgba(137,180,250,0.4)}
+#tmux-paste{font-size:16px}
+#tmux-keys{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:3px}
+.tmux-spacer{visibility:hidden}
+#tmux-prompt-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;
+  background:rgba(0,0,0,0.5);align-items:center;justify-content:center}
+#tmux-prompt-overlay.open{display:flex}
+#tmux-prompt-box{background:#1e1e2e;border:1px solid #45475a;border-radius:10px;padding:16px;
+  min-width:260px;font-family:system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,0.6)}
+#tmux-prompt-box label{color:#cdd6f4;font-size:13px;display:block;margin-bottom:8px}
+#tmux-prompt-box input{width:100%;box-sizing:border-box;background:#313244;border:1px solid #585b70;
+  border-radius:6px;padding:8px 10px;color:#cdd6f4;font-size:14px;font-family:'JetBrains Mono NF',monospace;
+  outline:none}
+#tmux-prompt-box input:focus{border-color:#89b4fa}
+#tmux-prompt-box .btn-row{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
+#tmux-prompt-box button{border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;
+  font-family:system-ui,sans-serif;font-weight:500}
+@media(max-width:768px){
+  #tmux-overlay{top:12px!important;right:12px!important;gap:12px!important}
+  #tmux-toggle{width:96px!important;height:96px!important;font-size:40px!important;border-radius:16px!important;background:rgba(30,30,30,1)!important;box-shadow:0 2px 6px rgba(0,0,0,0.8)!important}
+  #tmux-toggle.open{background:rgba(40,40,40,1)!important}
+  #tmux-esc,#tmux-paste{width:110px!important;height:96px!important;font-size:28px!important;border-radius:16px!important;background:rgba(137,180,250,1)!important;box-shadow:0 2px 6px rgba(0,0,0,0.8)!important}
+  #tmux-esc:active,#tmux-paste:active{background:rgba(160,200,255,1)!important}
+  #tmux-paste{font-size:40px!important}
+  #tmux-panel{min-width:280px!important;padding:14px!important;border-radius:16px!important;background:rgba(30,30,30,1)!important;box-shadow:0 4px 12px rgba(0,0,0,0.8)!important}
+  #tmux-panel button{height:88px!important;font-size:22px!important;border-radius:14px!important;background:rgba(50,50,50,1)!important}
+  #tmux-panel button:active{background:rgba(80,80,80,1)!important}
+  #tmux-panel button.wide{font-size:18px!important;padding:0 16px!important}
+  #tmux-panel .section-label{font-size:14px!important}
+  #tmux-prompt-box{padding:28px!important;border-radius:18px!important;background:rgba(30,30,46,1)!important}
+  #tmux-prompt-box label{font-size:18px!important}
+  #tmux-prompt-box input{font-size:20px!important;padding:16px 18px!important;background:rgba(49,50,68,1)!important}
+  #tmux-prompt-box button{padding:16px 28px!important;font-size:18px!important}
+  #tmux-prompt-box .btn-cancel{background:rgba(69,71,90,1)!important}
+  #tmux-prompt-box .btn-ok{background:rgba(137,180,250,1)!important}
+}
+#tmux-prompt-box .btn-cancel{background:#45475a;color:#bac2de}
+#tmux-prompt-box .btn-ok{background:#89b4fa;color:#1e1e2e}
